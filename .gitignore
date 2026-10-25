@@ -1,0 +1,7 @@
+market-making/data/**
+
+**.git
+**venv**
+
+**.cache**
+
