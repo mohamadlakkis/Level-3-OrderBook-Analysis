@@ -314,7 +314,43 @@ def check_monotonicity():
         print(errors[['real_timestamp', 'timestamp', 'time_diff']].head())
 
 
+def clean_and_validate_data(input_path: str, output_path: str):
+    print(f"Loading dataset: {input_path}")
+    df = pd.read_parquet(input_path)
+    initial_count = len(df)
+    
+    # 1. Filter out Add orders (A, F) with missing critical values
+    is_add = df['msg_type'].isin(['A', 'F'])
+    valid_adds = df[is_add & df[['timestamp', 'order_ref', 'side', 'shares', 'price']].notna().all(axis=1)]
+    other_msgs = df[~is_add]
+    df_filtered = pd.concat([valid_adds, other_msgs]).sort_index()
+    
+    # 2. Remove rows with negative or zero prices where a price is required
+    has_price = df_filtered['price'].notna()
+    valid_prices = (df_filtered['price'] > 0) | (~has_price)
+    df_filtered = df_filtered[valid_prices]
+    
+    # 3. Remove invalid shares (Delete 'D' messages have 0 shares by convention)
+    valid_shares = (df_filtered['msg_type'] == 'D') | (df_filtered['shares'] > 0)
+    df_filtered = df_filtered[valid_shares]
+    
+    final_count = len(df_filtered)
+    dropped_count = initial_count - final_count
+    
+    # Save the cleaned dataset to parquet format
+    df_filtered.to_parquet(output_path, index=False)
+    
+    # Professional summary report
+    print("\n--- CLEANING REPORT ---")
+    print(f"Initial row count    : {initial_count:,}")
+    print(f"Dropped rows         : {dropped_count:,}")
+    print(f"Final retained rows  : {final_count:,}")
+    print(f"Saved to             : {output_path}")
+    print("-----------------------\n")
+
+
 if __name__ == "__main__":
     extract_aapl_market_open(start_hour=9.5, end_hour=10.0)
     check_parquet_data()
     check_monotonicity()
+    clean_and_validate_data("market-making/data/processed/AAPL_market_open.parquet", "market-making/data/processed/AAPL_market_open_cleaned.parquet")
