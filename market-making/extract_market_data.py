@@ -61,6 +61,15 @@ def extract_aapl_market_open(start_hour=9.5, end_hour=10.0):
             
             # 3. Initial Snapshot at exact start time: inject live pre-market orders
             if not snapshot_taken and timestamp >= START_TIME:
+                # Purge crossed auction orders from pre-market (cleared in opening cross)
+                pre_bids = [px for s, px, _ in orders.values() if s == 'B']
+                pre_asks = [px for s, px, _ in orders.values() if s == 'S']
+                if pre_bids and pre_asks:
+                    min_ask = min(pre_asks)
+                    max_bid = max(pre_bids)
+                    if max_bid >= min_ask:
+                        orders = {oid: data for oid, data in orders.items() if not (data[0] == 'B' and data[1] >= min_ask)}
+
                 print(f"Taking Opening Snapshot at {start_hour}h ({len(orders)} live orders in book)...")
                 for oid, (s, px, q) in orders.items():
                     records.append({
@@ -196,20 +205,36 @@ def extract_aapl_market_open(start_hour=9.5, end_hour=10.0):
                         'aggressor': None
                     })
                     
-            # U : Replace (replacing one order with another)
+            # U : Replace (cancels old order, adds replacement order)
             elif msg_type == 'U':
                 old_id, new_id, new_qty, new_px = struct.unpack_from('>QQII', msg_data, 11)
                 new_price = new_px / 10000.0
                 old = orders.pop(old_id, None)
-                side = old[0] if old else None
-                orders[new_id] = (side, new_price, new_qty)
+                if old:
+                    old_side, old_price, old_qty = old
+                else:
+                    old_side, old_price, old_qty = None, None, 0
+                
+                orders[new_id] = (old_side, new_price, new_qty)
                 
                 if in_window:
+                    # 1. Explicit deletion of the old replaced order
+                    if old_id:
+                        records.append({
+                            'timestamp': timestamp,
+                            'msg_type': 'D',
+                            'order_ref': old_id,
+                            'side': old_side,
+                            'shares': old_qty,
+                            'price': old_price,
+                            'aggressor': None
+                        })
+                    # 2. Explicit addition of the new replacement order
                     records.append({
                         'timestamp': timestamp,
-                        'msg_type': msg_type,
+                        'msg_type': 'A',
                         'order_ref': new_id,
-                        'side': side,
+                        'side': old_side,
                         'shares': new_qty,
                         'price': new_price,
                         'aggressor': None
@@ -319,8 +344,8 @@ def clean_and_validate_data(input_path: str, output_path: str):
     df = pd.read_parquet(input_path)
     initial_count = len(df)
     
-    # 1. Filter out Add orders (A, F) with missing critical values
-    is_add = df['msg_type'].isin(['A', 'F'])
+    # 1. Filter out Add orders (A, F, SNAPSHOT) with missing critical values
+    is_add = df['msg_type'].isin(['A', 'F', 'SNAPSHOT'])
     valid_adds = df[is_add & df[['timestamp', 'order_ref', 'side', 'shares', 'price']].notna().all(axis=1)]
     other_msgs = df[~is_add]
     df_filtered = pd.concat([valid_adds, other_msgs]).sort_index()
@@ -353,4 +378,7 @@ if __name__ == "__main__":
     extract_aapl_market_open(start_hour=9.5, end_hour=10.0)
     check_parquet_data()
     check_monotonicity()
-    clean_and_validate_data("market-making/data/processed/AAPL_market_open.parquet", "market-making/data/processed/AAPL_market_open_cleaned.parquet")
+    clean_and_validate_data(
+        input_path="market-making/data/processed/AAPL_market_open.parquet",
+        output_path="market-making/data/processed/AAPL_market_open_cleaned.parquet"
+    )
