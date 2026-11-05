@@ -3,7 +3,6 @@
 name = "nasdaq-book-reconstruction"
 version = "0.1.0"
 description = "Strict, documented Nasdaq ITCH 5.0 to Parquet conversion"
-readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["pyarrow>=18,<24"]
 
