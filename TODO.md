@@ -1,9 +1,20 @@
-1. Start playing around with the data, maybe change it to pandas dataframe and do some basic analysis, like plotting the order book depth for a given symbol at a given time. But one crucial thing to keep in mind, create a new branch for your work, say call it experimentation_{task_name} (choose the task name you want) and do not push to main branch, we will merge our work later after we have a clear understanding of what we want to do. 
-You could do that by: 
-```bash
-git checkout -b experimentation_{task_name}
-```
-and then here you can push your work as much as you want. 
+# Next stage: analysis (not implemented yet)
 
-2. We could also start playing around with getting the calculating the mid price and spread (before moving to LCI/LPI research) and see if we can get some insights from the data, like first trying to see if we can get the mid price and spread for a given symbol at a given time, and then maybe plotting it over time to see how it changes. 
-3. Once we have a clear understanding of the data and how to play with it, we can start thinking about our research questions and how to answer them using the data. 
+The current conversion workflow is documented in [README.md](README.md).
+Use a separate experimentation branch for future research work and review before
+merging.
+
+
+Next Steps are into two clusters 
+
+## Software Part (Mhd)
+1. Better Documentation for the code
+2. Write the setup.sh for MAC and WINDOWS and test it 
+3. Agree on the in-memory analysis object and implement a Parquet reader that verifies the shared schema/version and session metadata before returning it.
+4. Implement public replay from the full history, preserving cancellation and replacement lifecycles alongside current book state.
+
+## Analysis Part (Guillaume and Jules)
+
+1. Experimenting with the new interface and replay to understand the data and the book reconstruction. 
+2. Starting to implement the analysis package, including book reconstruction and trade classification.
+3. Calculate depth, best bid/ask, spread, and mid-price; then agree on exact LPI/LCI definitions, including how cancellations are classified. 
