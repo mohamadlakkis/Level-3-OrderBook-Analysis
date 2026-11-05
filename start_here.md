@@ -28,3 +28,8 @@ uv run itch-convert (this will convert the .gz into .parquet and also give you a
 ```
 
 
+Before Merging with main always run 
+
+```
+uv run pytest
+```
