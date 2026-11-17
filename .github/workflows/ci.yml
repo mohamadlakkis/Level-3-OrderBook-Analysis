@@ -17,9 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  checks:
-    # Keep this name stable: select "Python checks" as a required status check.
-    name: Python checks
+  quality:
+    name: Python tests and quality
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -51,3 +50,48 @@ jobs:
 
       - name: Check type annotations
         run: uv run --locked mypy
+
+  downloaders:
+    # Verify each script natively, even when contributors develop on Ubuntu.
+    name: Download scripts (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - name: Check out the proposed changes
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.8.16"
+          python-version: "3.10"
+
+      - name: Exercise the native downloader with a tiny local HTTP server
+        # Standard-library-only tests: no project dependencies or Nasdaq download.
+        run: >-
+          uv run --no-project python -m unittest discover
+          -s tests -p test_download_scripts.py -v
+
+  checks:
+    # Preserve the required status name already configured in GitHub's ruleset.
+    name: Python checks
+    needs: [quality, downloaders]
+    # A skipped job can satisfy a required check, so explicitly run and fail this
+    # final gate if either dependency failed instead of allowing it to be skipped.
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require Python quality checks and both native downloaders to pass
+        env:
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          DOWNLOAD_RESULT: ${{ needs.downloaders.result }}
+        run: |
+          test "$QUALITY_RESULT" = success
+          test "$DOWNLOAD_RESULT" = success
