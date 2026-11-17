@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Run in macOS Terminal, from the repository root.
-# Command: bash macos_setup.sh
+# Command: bash setup_scripts/macos_setup.sh
 set -euo pipefail
 
-project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 raw_directory="$project_root/data/raw"
 mkdir -p -- "$raw_directory"
 

@@ -8,10 +8,8 @@ merging.
 Next Steps are into two clusters 
 
 ## Software Part (Mhd)
-1. Better Documentation for the code
-2. Write the setup.sh for MAC and WINDOWS and test it 
-3. Agree on the in-memory analysis object and implement a Parquet reader that verifies the shared schema/version and session metadata before returning it.
-4. Implement public replay from the full history, preserving cancellation and replacement lifecycles alongside current book state.
+
+1. Descriptive statistics and visualizations of the data, including the book reconstruction and trade classification.
 
 ## Analysis Part (Guillaume and Jules)
 

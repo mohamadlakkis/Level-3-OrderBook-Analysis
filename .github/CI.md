@@ -24,7 +24,8 @@ It also requires download-script tests to pass on native macOS and Windows.
 Those jobs use a tiny local HTTP fixture and do not download Nasdaq data or
 install project dependencies. The final `Python checks` gate runs even if a
 dependency fails and explicitly reports failure, preserving the required status
-name configured in your ruleset. Platform commands are at the top of each setup script.
+name configured in your ruleset. Platform commands are at the top of each script
+in [setup_scripts/](../setup_scripts/).
 The read-only repository permission is sufficient for testing. Concurrent runs
 for the same PR are cancelled when a newer commit arrives, and a ten-minute
 timeout prevents a stuck job from running indefinitely.

@@ -76,6 +76,8 @@ class DownloadScriptTests(unittest.TestCase):
         root = Path(self.temporary.name)
         self.project = root / "project with spaces"
         self.project.mkdir()
+        script_directory = self.project / "setup_scripts"
+        script_directory.mkdir()
         self.cwd = root / "unrelated working directory"
         self.cwd.mkdir()
         self.destination = self.project / "data" / "raw" / FILENAME
@@ -83,15 +85,15 @@ class DownloadScriptTests(unittest.TestCase):
             shell = shutil.which("powershell.exe") or shutil.which("pwsh")
             if shell is None or shutil.which("curl.exe") is None:
                 self.fail("Windows download tests require PowerShell and curl.exe.")
-            script = self.project / "windows_setup.ps1"
-            shutil.copyfile(PROJECT / script.name, script)
+            script = script_directory / "windows_setup.ps1"
+            shutil.copyfile(PROJECT / "setup_scripts" / script.name, script)
             self.command = [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)]
         else:
             shell = shutil.which("bash")
             if shell is None or shutil.which("curl") is None:
                 self.fail("Download tests require Bash and curl.")
-            script = self.project / "macos_setup.sh"
-            shutil.copyfile(PROJECT / script.name, script)
+            script = script_directory / "macos_setup.sh"
+            shutil.copyfile(PROJECT / "setup_scripts" / script.name, script)
             self.command = [shell, str(script)]
         _FileHandler.requests = []
         server = ThreadingHTTPServer(("127.0.0.1", 0), _FileHandler)
@@ -120,6 +122,7 @@ class DownloadScriptTests(unittest.TestCase):
         self.assertEqual(self.destination.read_bytes(), PAYLOAD)
         self.assertTrue(gzip.decompress(self.destination.read_bytes()))
         self.assertFalse((self.cwd / "data").exists())
+        self.assertFalse((self.project / "setup_scripts" / "data").exists())
 
     def test_resume_partial_download(self) -> None:
         """Send a Range request and append only the missing bytes."""

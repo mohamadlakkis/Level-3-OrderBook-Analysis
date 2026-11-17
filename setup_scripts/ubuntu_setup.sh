@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+# Run in an Ubuntu terminal, from the repository root.
+# Command: bash setup_scripts/ubuntu_setup.sh
 # Stop on errors, undefined variables, or a failed command in a pipeline.
 set -euo pipefail
 
-# Resolve paths relative to this script, even when called from another directory.
-project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# The repository root is the parent of setup_scripts, regardless of the working directory.
+project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 raw_directory="$project_root/data/raw"
 mkdir -p -- "$raw_directory"
 
