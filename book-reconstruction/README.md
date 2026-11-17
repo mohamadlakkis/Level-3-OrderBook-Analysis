@@ -73,8 +73,9 @@ batch = next(file.iter_batches(batch_size=5))
 print(batch.to_pylist())  # Five dictionaries; Python None means null.
 ```
 
-This example is for learning; the structured, schema-checking analysis reader
-will be implemented later. Reading all rows is a separate choice from conversion.
+This example is for learning. Use the schema-checking reader and descriptive
+notebook in [analysis/](../analysis/README.md) for the analysis workflow.
+Reading all rows is a separate choice from conversion.
 
 ## Loading, replay, and cancellations
 

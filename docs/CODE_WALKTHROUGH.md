@@ -18,9 +18,11 @@ import that module and call its `main` function. `uv sync` installs this command
 inside `.venv/bin/`. `uv run` uses that environment automatically.
 
 `[build-system]` selects setuptools to install the local code. The explicit
-`package-dir` mapping tells setuptools where to find the two importable packages.
+`package-dir` mapping tells setuptools where to find the three importable packages.
 The outer folder is `book-reconstruction`, but Python imports use the name
-`book_reconstruction`. `analysis/` is reserved and contains no implementation.
+`book_reconstruction`. `analysis/` contains the reader and descriptive notebook;
+it is also included in the installed packages. The optional `analysis` dependency
+group supplies notebook tools without adding them to converter-only installs.
 The remaining tool sections configure tests, formatting, and strict annotation
 checks. PyArrow has incomplete typing information, so its imports are exempted
 from missing-stub errors; our own interfaces are still checked.
@@ -244,4 +246,27 @@ Parquet is published and the report explains the failure.
 
 Runtime checks validate real sources; synthetic tests validate the code.
 Neither proves absence of every well-formed omission in the original download.
-No analysis reader, indicator, or public book-replay API is implemented yet.
+The analysis reader is implemented; book-based indicators and a public replay
+API are still future work.
+
+## 10. `analysis/data.py` and the descriptive notebook
+
+`MarketData` is the named result of `load_market_data()`: an Arrow event table
+plus its ticker, session date, timezone, schema version, and explicit file path.
+`file_sha256()` optionally checks a selected reference file. The loader checks
+column types/nullability, required metadata, source ordering, ticker identity,
+and message-specific field applicability. It raises on inconsistency instead of
+sorting, imputing, or silently selecting another dataset. It does not replay orders.
+
+The [notebook](../analysis/01_event_descriptive_analysis.ipynb) converts selected
+columns to Arrow-backed pandas types, preserving nullable unsigned references.
+It builds time and event-family variables, keeps structural nulls, and summarizes
+clearly separated event populations and fixed one-minute bins. Interpretations
+are separate, editable Markdown cells describing the reference results; review
+their numbers and conclusions when changing data or calculations. The opening-minute
+correlation sensitivity is a diagnostic, not an automatic data-removal rule.
+
+Six figures, CSV summaries, and provenance are exported to `analysis/outputs/`.
+These exports are ignored by Git; the executed notebook retains its tables and
+figures for the instructor. See [analysis/README.md](../analysis/README.md) for
+environment setup and reproducible execution commands.

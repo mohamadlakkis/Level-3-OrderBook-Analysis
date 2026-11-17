@@ -6,6 +6,7 @@
     - [Description of the conversion part](#description-of-the-conversion-part)
     - [Running the Conversion part](#running-the-conversion-part)
   - [Setup for Part 2 (Analysis)](#setup-for-part-2-analysis)
+    - [Running the analysis notebook](#running-the-analysis-notebook)
 - [How to contribute](#how-to-contribute)
 
 # High-Level Overview 
@@ -49,7 +50,7 @@ For more details the output for now will be in data/processed/AAPL_2019-12-30.pa
 (it will seem complex but it is not under the hood it is doing very simple things) check the [book-reconstruction/README.md](book-reconstruction/README.md) for a lot more details on this, it is really interesting. 
 
 
-The common [common/SCHEMA.md](common/SCHEMA.md) defines the stored data schema used by conversion and future analysis. You can generate the Parquet file yourself or use the bundled reference dataset described below.
+The common [common/SCHEMA.md](common/SCHEMA.md) defines the stored data schema used by conversion and analysis. You can generate the Parquet file yourself or use the bundled reference dataset described below.
 
 So direct next Steps: 
 
@@ -88,13 +89,23 @@ A validated, full-day AAPL dataset for **December 30, 2019** is included at
 approximately **23.26 MB**. This lets you start from the converted data even if
 downloading or conversion is unavailable.
 
-Run `uv sync --locked` to install the project dependencies. Select this file
-explicitly as the input to your analysis; copying it into `data/processed/` is
-not necessary. Files you generate through conversion still go in `data/processed/`.
+Run `uv sync --locked` to install the project dependencies. Files you generate through conversion still go in `data/processed/`.
 Keep the reference copy unchanged. Its checksum and a small inspection example
 are in [data/default/README.md](data/default/README.md).
 
-The analysis reader, book replay, and indicators are still to be implemented.
+### Running the analysis notebook
+
+The executed [descriptive notebook](analysis/01_event_descriptive_analysis.ipynb)
+covers data auditing, informative variables, statistics, visualizations, and
+interpretations. To run it yourself:
+
+Just go to vscode and open the project folder and open the notebook.  Use the `.venv` Python kernel for this project. 
+
+Open the notebook and select the project's `.venv` Python kernel. It uses the
+bundled dataset directly. See [analysis/README.md](analysis/README.md) for the
+reader's return object, generated outputs, and terminal execution instructions.
+The schema-checking reader is implemented; book replay and book-based indicators
+are still future work.
 
 
 # How to contribute

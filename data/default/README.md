@@ -42,6 +42,7 @@ print(file.metadata.num_rows)
 print(next(file.iter_batches(batch_size=5)).to_pylist())
 ```
 
-This uses PyArrow directly. The structured analysis reader and book replay are
-not implemented yet. See the [conversion guide](../../book-reconstruction/README.md)
+This small example uses PyArrow directly. The schema-checking reader and executed
+descriptive notebook are documented in [analysis/README.md](../../analysis/README.md).
+Book replay is not implemented yet. See the [conversion guide](../../book-reconstruction/README.md)
 to generate your own dataset in `data/processed/`.
