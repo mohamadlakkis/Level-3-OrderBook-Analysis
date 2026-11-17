@@ -12,3 +12,6 @@ __pycache__/
 build/
 dist/
 .vscode/
+# Notebook outputs remain embedded in the committed .ipynb; exports are reproducible.
+/analysis/outputs/
+.ipynb_checkpoints/
