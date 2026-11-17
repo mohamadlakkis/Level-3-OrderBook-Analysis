@@ -20,6 +20,11 @@ runs. Tests generate small synthetic ITCH files; CI does not download Nasdaq dat
 or convert the full daily source.
 
 The workflow's `Python checks` job fails if installation or any check fails.
+It also requires download-script tests to pass on native macOS and Windows.
+Those jobs use a tiny local HTTP fixture and do not download Nasdaq data or
+install project dependencies. The final `Python checks` gate runs even if a
+dependency fails and explicitly reports failure, preserving the required status
+name configured in your ruleset. Platform commands are at the top of each setup script.
 The read-only repository permission is sufficient for testing. Concurrent runs
 for the same PR are cancelled when a newer commit arrives, and a ten-minute
 timeout prevents a stuck job from running indefinitely.
