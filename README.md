@@ -26,7 +26,10 @@ Now this data is in a binary format (.gz) which is not very easy to work with, s
 3. At least 4 GB of free disk (for the raw 3.52 GB and the parquet is 23.26 MB (since it contains only APPL ticker))
 
 
-## Setup for Part 1 (Conversion)
+## Setup for Part 1 (Conversion) 
+
+### IMPORTANT NOTE: 
+[NOTE: if for some weird reason this setup 1 failed , we already have the a default parquet file for AAPL ticker in data/default/AAPL_2019-12-30.parquet, so you can use it to start the analysis part, but we recommend you to run the conversion part first to get the parquet file yourself, but this is just in case you have some issues with the conversion part because ]
 
 ### Description of the conversion part
 The next couple of lines explains the high level flow of the code and why we made it this way. 
@@ -46,7 +49,7 @@ For more details the output for now will be in data/processed/AAPL_2019-12-30.pa
 (it will seem complex but it is not under the hood it is doing very simple things) check the [book-reconstruction/README.md](book-reconstruction/README.md) for a lot more details on this, it is really interesting. 
 
 
-The common [common/SCHEMA.md](common/SCHEMA.md) shows us the schema this way you can directly start the analysis part without worrying about the conversion part[But of course you need to run the conversion part first to get the parquet file].
+The common [common/SCHEMA.md](common/SCHEMA.md) defines the stored data schema used by conversion and future analysis. You can generate the Parquet file yourself or use the bundled reference dataset described below.
 
 So direct next Steps: 
 
@@ -79,7 +82,19 @@ Start with the [conversion guide](book-reconstruction/README.md), then the
 
 
 ## Setup for Part 2 (Analysis)
-TODO
+
+A validated, full-day AAPL dataset for **December 30, 2019** is included at
+`data/default/AAPL_2019-12-30.parquet`. It contains **1,519,367 rows** and is
+approximately **23.26 MB**. This lets you start from the converted data even if
+downloading or conversion is unavailable.
+
+Run `uv sync --locked` to install the project dependencies. Select this file
+explicitly as the input to your analysis; copying it into `data/processed/` is
+not necessary. Files you generate through conversion still go in `data/processed/`.
+Keep the reference copy unchanged. Its checksum and a small inspection example
+are in [data/default/README.md](data/default/README.md).
+
+The analysis reader, book replay, and indicators are still to be implemented.
 
 
 # How to contribute

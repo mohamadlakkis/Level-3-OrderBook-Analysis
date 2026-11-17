@@ -1,5 +1,6 @@
-# Raw downloads, generated Parquet files, and diagnostic reports stay local.
-/data/
+# Raw downloads and generated outputs stay local; the reference dataset is shared.
+/data/*
+!/data/default/
 # Python environments and generated caches/build metadata.
 .venv/
 __pycache__/
