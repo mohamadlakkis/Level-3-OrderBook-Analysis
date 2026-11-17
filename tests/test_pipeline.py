@@ -318,7 +318,7 @@ def test_downloader_destination_is_independent_of_working_directory(tmp_path: Pa
         "ITCH_TEST_CAPTURE": str(capture),
     }
     subprocess.run(
-        ["bash", str(project / "ubuntu_setup.sh")],
+        ["bash", str(project / "setup_scripts" / "ubuntu_setup.sh")],
         cwd=tmp_path,
         env=environment,
         check=True,

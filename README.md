@@ -38,7 +38,7 @@ book_reconstruction ->  common <- analysis
 ```
 
 
-THe intial step is to run ubuntu_setup.sh[Or the corresponding setup script for your operating system] to download the raw data  (.gz)
+The initial step is to run `bash setup_scripts/ubuntu_setup.sh` (or the corresponding script in `setup_scripts/` for your operating system) to download the raw data (.gz).
 
 Next we need to convert this .gz into parquet file, it will convert the .gz into .parquet with default values and out paths and ticker is apple. WE can play around with this I made a cli arugments you can check this [book-reconstruction/README.md](book-reconstruction/README.md)
 
@@ -54,7 +54,7 @@ So direct next Steps:
 Run 
 
 ```
-use `ubuntu_setup.sh`, `macos_setup.sh`, or `windows_setup.ps1` 
+use `setup_scripts/ubuntu_setup.sh`, `setup_scripts/macos_setup.sh`, or `setup_scripts/windows_setup.ps1`
 NOTE: The command and terminal to use are written at the top of the scripts.
 ```
 

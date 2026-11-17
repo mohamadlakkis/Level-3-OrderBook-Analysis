@@ -218,7 +218,7 @@ still buffered. A failed attempt does not invalidate an older output. Report
 and publication are separate filesystem operations: require the final Parquet
 path, not just a report. Forced termination can leave an unpublished `.partial`.
 
-## 8. `cli.py` and `ubuntu_setup.sh`
+## 8. `cli.py` and `setup_scripts/ubuntu_setup.sh`
 
 `PROJECT_ROOT` walks upward from the module location so defaults do not depend
 on the working directory. `_session_date()` parses a standard Nasdaq filename
@@ -229,8 +229,9 @@ own visible error handling.
 
 In the downloader, `set -euo pipefail` stops on command failures, undefined
 variables, and failed pipelines. `BASH_SOURCE[0]` points to the script itself.
-`dirname`, `cd`, and `pwd` locate its directory; quotes protect paths containing
-spaces. `mkdir -p` creates missing folders and accepts existing ones. `wget -c`
+`dirname`, `cd`, and `pwd` locate the repository root one level above
+`setup_scripts/`; quotes protect paths containing spaces. `mkdir -p` creates
+missing folders and accepts existing ones. `wget -c`
 resumes the compressed download; `-P` selects root `data/raw/`. No decompressed
 copy is written to disk.
 
