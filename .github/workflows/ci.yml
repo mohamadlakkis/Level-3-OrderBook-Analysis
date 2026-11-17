@@ -1,0 +1,53 @@
+# GitHub runs this workflow after a PR is opened and whenever it receives commits.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+# Checking out and testing code needs only read access to the repository.
+permissions:
+  contents: read
+
+# A newer commit replaces an older in-progress run for the same PR or branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    # Keep this name stable: select "Python checks" as a required status check.
+    name: Python checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out the proposed changes
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          # Match the uv version used to verify this project's lockfile locally.
+          version: "0.8.16"
+          python-version: "3.10"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install the locked dependencies, including test tools
+        # Fail if pyproject.toml and uv.lock disagree; never silently update the lock.
+        run: uv sync --locked --group dev
+
+      - name: Run the tests
+        # Tests construct tiny synthetic inputs; no Nasdaq download is needed.
+        run: uv run --locked pytest -q
+
+      - name: Check lint
+        run: uv run --locked ruff check .
+
+      - name: Check type annotations
+        run: uv run --locked mypy
