@@ -18,9 +18,9 @@ and the output is `data/processed/AAPL_2019-12-30.parquet`. Conversion covers th
 entire daily file, including premarket, regular hours, and after-hours.
 The command also prints a unique JSON report path in `data/processed/`.
 
-To download on another
-checkout, use `bash ubuntu_setup.sh`; this only downloads and does not install
-Python dependencies or run conversion. The converter never downloads anything.
+To download, use `ubuntu_setup.sh`, `macos_setup.sh`, or `windows_setup.ps1`.
+The command and terminal to use are written at the top of the new scripts.
+These download data without installing Python dependencies or running conversion.
 
 For another daily file or output directory:
 
