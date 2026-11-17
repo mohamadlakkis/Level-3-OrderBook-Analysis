@@ -1,6 +1,6 @@
 # Stored event contract, version 1.0.0
 
-This document is the contract between the `.gz` converter and future analysis.
+This document is the contract between the `.gz` converter and analysis.
 The executable definition is [schema.py](schema.py). A Parquet file contains
 one table: each row is one original retained message, in source order. Nothing
 is silently dropped because it failed validation. Invalid input stops the run.
@@ -110,7 +110,7 @@ Parquet stores key/value metadata in its schema, outside event rows:
 | `retained_message_types` | JSON list of retained codes. |
 
 An ITCH time has no date or timezone offset. To obtain a calendar timestamp,
-future analysis must combine `session_date` with `timestamp_ns` using the
+analysis must combine `session_date` with `timestamp_ns` using the
 documented exchange timezone. We do not invent a UTC timestamp during storage.
 
 The converter keeps equal timestamps in original sequence order and rejects a
