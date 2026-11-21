@@ -114,6 +114,9 @@ For doing a PR to master branch, 3 automated checks must pass:
   2. Having the most latest version of the code (git pull origin master)
   3. 2 approvales from the reviewers must accept
 
+Cross-audit: before merging a colleague's work, audit it and leave verdicts as code comments
+following the convention in [AUDIT_LOG.md](AUDIT_LOG.md).
+
 Tips to contribute:
 1. Before doing a PR you can run local automated checks to make sure your code is not breaking anything. (See below)
 1.1. Pull the latest version of the code (git pull origin master)
