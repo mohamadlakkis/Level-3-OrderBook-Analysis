@@ -107,6 +107,12 @@ reader's return object, generated outputs, and terminal execution instructions.
 The schema-checking reader is implemented; book replay and book-based indicators
 are still future work.
 
+The hypothesis notebooks follow: [02](analysis/02_mid_price_prediction.ipynb) tests H1 (total
+order flow imbalance), [03](analysis/03_hypothesis2_decomposed_flow.ipynb) tests H2 (OFI split by
+message type) and [04](analysis/04_second_day_replication.ipynb) repeats both tests on a second
+session, 2019-07-30. Notebook 04 reads the 1-second grids of `data/default/AAPL_grids_1s.parquet`,
+so it runs without downloading the raw file of that day.
+
 
 # How to contribute
 For doing a PR to master branch, 3 automated checks must pass: 
