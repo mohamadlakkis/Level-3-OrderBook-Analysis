@@ -217,7 +217,8 @@ def convert_itch_to_parquet(
             raise ValidationError(
                 Diagnostic("PARQUET_MISMATCH", "Footer schema/count differs from writer.")
             )
-        with temporary.open("rb") as stream:
+        # Windows refuses fsync on a read-only handle (EBADF), hence "r+b".
+        with temporary.open("r+b") as stream:
             os.fsync(stream.fileno())
         report.update(
             {
