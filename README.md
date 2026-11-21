@@ -10,6 +10,8 @@
 - [How to contribute](#how-to-contribute)
 
 # High-Level Overview 
+**Report:** [report/report.pdf](report/report.pdf) (same text in [report/report.md](report/report.md)): question, data, method, results and limits.
+
 For this project we are going to use the Nasdaq ITCH data to do some analysis on it. We will later go into details on what exact hypothesis we are going to test and what analysis we are going to do, but for now we will focus on the data preparation part. So we have to focus on part 1 (Conversion) and part 2 (Analysis).
 
 We needed a level-3-order book data to do our analysis, so we stumbled upon the Nasdaq ITCH data which contains the level-3-order book data for one day(December 30, 2019), and for multiple tickers. (Sneak peek: we will focus on AAPL ticker for now, but we can do the same for other tickers as well).
