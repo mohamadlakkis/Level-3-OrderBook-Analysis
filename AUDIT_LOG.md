@@ -16,7 +16,7 @@ Rule of thumb: a few useful remarks, not a long list. Say "OK" when something is
 
 - [x] Anti-leakage alignment (features on (t-1s, t], target on (t, t+5s]): OK
 - [x] Chronological split, purge and train-only scaling: OK
-- [ ] Diebold-Mariano test on nested models (Clark-West?) and ddof, hit rate without uncertainty
-- [ ] Wording of the H1 conclusion: too strong for a 0.35 % MSE gain (the gain itself holds with Clark-West)
-- [ ] Zero-change baseline from `TODO.md`
+- [x] Diebold-Mariano test on nested models (Clark-West?) and ddof, hit rate without uncertainty: addressed (Clark-West added, ddof=1 aligned, Wilson CI & McNemar test added)
+- [x] Wording of the H1 conclusion: too strong for a 0.35 % MSE gain (the gain itself holds with Clark-West): addressed (conclusions and takeaways softened to reflect modest magnitude)
+- [x] Zero-change baseline from `TODO.md`: addressed (Zero-change baseline added to evaluation table)
 - [ ] Optional: move the order book replay to `book-reconstruction/`
