@@ -219,6 +219,45 @@ def fit_predict(columns, train, test, lags=5):
     return result, np.asarray(result.predict(x_test))
 
 
+def fit_predict_shrunk(train, test, penalty):
+    """M3 with a ridge penalty that pulls the four flow coefficients towards a common value.
+
+    The flows are written as b * ofi + sum_g d_g * ofi_g and only the d_g are penalized, so
+    penalty = 0 gives the OLS fit of M3 and a very large penalty gives M2. All flows share one
+    scale (the training sd of the total OFI), so "equal coefficients" means equal per share.
+    """
+    mean, std = train[STATIC].mean(), train[STATIC].std(ddof=0)
+    flow_mean, scale = train[["ofi", *FLOW]].mean(), train["ofi"].std(ddof=0)
+
+    def design(sample):
+        static = (sample[STATIC] - mean) / std
+        flow = (sample[["ofi", *FLOW]] - flow_mean) / scale
+        return np.column_stack([np.ones(len(sample)), static, flow])
+
+    x_train, y_train = design(train), train["target"].to_numpy()
+    weights = np.r_[np.zeros(1 + len(STATIC) + 1), np.ones(len(FLOW))]
+    if penalty == 0:
+        beta = np.linalg.lstsq(x_train, y_train, rcond=None)[0]
+    else:
+        gram = x_train.T @ x_train + penalty * len(train) * np.diag(weights)
+        beta = np.linalg.solve(gram, x_train.T @ y_train)
+    per_share = (beta[1 + len(STATIC)] + beta[-len(FLOW) :]) / scale  # ticks per share, by group
+    return per_share, design(test) @ beta
+
+
+def choose_penalty(train, penalties, n_blocks=6, purge=5):
+    """Pick the penalty with the lowest pooled MSE on expanding windows inside the training set."""
+    blocks = np.array_split(np.arange(len(train)), n_blocks)
+    errors = {penalty: [] for penalty in penalties}
+    for k in range(1, n_blocks):
+        fold_train, fold_test = train.iloc[: blocks[k][0] - purge], train.iloc[blocks[k]]
+        y = fold_test["target"].to_numpy()
+        for penalty in penalties:
+            errors[penalty].append((y - fit_predict_shrunk(fold_train, fold_test, penalty)[1]) ** 2)
+    pooled = pd.Series({penalty: np.concatenate(e).mean() for penalty, e in errors.items()})
+    return pooled.idxmin(), pooled
+
+
 def scores(y, prediction, benchmark_mean):
     """Return MSE, MAE and out-of-sample R2 against a benchmark mean."""
     error = y - prediction

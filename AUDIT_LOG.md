@@ -36,10 +36,14 @@ GitHub PR comment: see review posted by [@surryjules](https://github.com/surryju
 - [x] Lightweight replication: pre-computed 1-second grid cache in `data/default/AAPL_grids_1s.parquet` allows running without downloading the 3.7 GB raw July file: OK
 
 ### Methodological & Modeling Enhancements to Address
-- [ ] **Bias-variance tradeoff & Ridge shrinkage on $M_3$** (`03_hypothesis2_decomposed_flow.ipynb`, cell 9):
+- [x] **Bias-variance tradeoff & Ridge shrinkage on $M_3$** (`03_hypothesis2_decomposed_flow.ipynb`, cell 9):
   The in-sample Wald test rejects coefficient equality ($p < 0.001$), but out-of-sample $M_3$ deteriorates ($MSE = 11.22 > 11.11$) due to multicollinearity and parameter estimation variance. Add an L2 Ridge regression test on $M_3$ to see if shrinking the 4 flow coefficients toward each other reduces variance and outperforms $M_2$.
-- [ ] **Cross-day volatility / target scale mismatch** (`04_second_day_replication.ipynb`, cell 3):
+- [x] **Cross-day volatility / target scale mismatch** (`04_second_day_replication.ipynb`, cell 3):
   Target is in raw ticks ($0.01$). December volatility ($4.69$ ticks) is double July's ($2.39$ ticks), so the December $\beta_{\text{OFI}}$ is $5\times$ larger ($0.29$ vs $0.05$). The December model applied to July yields higher MSE than the zero forecast ($5.79$ vs $5.72$). Test volatility-normalized ($\Delta P / \sigma_t$) or spread-normalized targets to enable scale-invariant cross-day transferability.
-- [ ] **Raw vs. standardized coefficients** (`03_hypothesis2_decomposed_flow.ipynb`, cells 6 & 9):
+- [x] **Raw vs. standardized coefficients** (`03_hypothesis2_decomposed_flow.ipynb`, cells 6 & 9):
   Replacement orders have low dispersion ($\sigma = 154.7$ shares vs $785.4$ for additions) and only $2.4\%$ event frequency, meaning their per-share price impact ($\text{ticks/share}$) is $\approx 4\times$ that of additions. Add a brief table or note reporting both raw ($\text{ticks/share}$) and standardized ($\text{ticks/sd}$) impacts to clarify why replacement flow exhibits high leverage out-of-sample.
 
+Replies from GC (round 2):
+- Ridge on $M_3$: done in notebook 03, section 8, and on both days in notebook 04, section 2. The penalty pulls the four coefficients towards each other and is chosen on the training part only. December: as good as $M_2$, not better (MSE 11.106 vs 11.108, Clark-West p = 0.17). July: keeps the gain of $M_3$ (p = 0.005).
+- Scaled target: done in notebook 04, section 4 (target divided by the volatility of the last 5 minutes, and by the spread). It removes the cross-day MSE cost of the December models on July, and H1 stays significant. The H2 result moves a lot with the volatility window (p from 0.005 to 0.30), so we do not count it as evidence for H2.
+- Raw vs standardized: done in notebook 03, cell 16 (coefficients per 1000 shares). Replace is about 4.7x add per share with the training sd (1.57 vs 0.34 tick), consistent with your ~4x.
