@@ -95,7 +95,10 @@ is used on the other. In December, M2 also beats M1 in each of 5 successive test
 forecast by 0.29 tick in December but only 0.056 tick in July, a calmer day where the price moves
 half as much. A model fitted in December therefore overstates the effect in July, and its MSE is
 then worse than that of M1, even though the OFI still carries information. In practice, the model
-has to be re-fitted on recent data.
+has to be re-fitted on recent data. Forecasting the move in units of the recent volatility (the
+standard deviation of the 5-second changes over the last 5 minutes) removes most of this problem:
+the December models then do about as well as "the price does not move" in July, and the OFI stays
+significant (notebook 04).
 
 **H2 is not supported.** On December 30 the four parts of the flow have clearly different
 coefficients on the training data, mostly added and replaced orders (figure 1), but M3 forecasts
@@ -105,6 +108,11 @@ The coefficients also change from one day to the next: added orders have the lar
 both days, but the effects of cancelled and replaced orders change sign (figure 2). Splitting the
 flow adds three coefficients to estimate, and they do not carry over to another day. The total
 OFI is as useful as its four parts.
+
+Two extra checks give the same answer. A version of M3 whose four coefficients are pulled towards
+each other (ridge regression) is as good as M2 in December (p = 0.17) and keeps the gain of M3 in
+July. With the target scaled by the recent volatility, M3 beats M2 across days for some lengths of
+the volatility window but not for others, so we do not count it as evidence.
 
 ![Figure 1](figures/h2_one_day.png)
 
@@ -116,7 +124,8 @@ intervals. Right: MSE on the test part (the vertical axis does not start at zero
 *Figure 2. Coefficients of the four parts of the flow in M3 on the two days.*
 
 **Size of the gains.** All gains are small. The best model reduces the error of "the price does not
-move" by less than 0.5 %, and the models fitted in December do worse than this forecast in July.
+move" by less than 0.5 %, and the models fitted in December do worse than this forecast in July
+unless the target is scaled by the volatility.
 Five-second price moves are mostly noise; the flow explains a small but real part of them.
 
 ## 5. Limits
@@ -130,7 +139,8 @@ Five-second price moves are mostly noise; the flow explains a small but real par
   deeper in the book and hidden orders are not counted.
 - **Choices.** A replaced order is kept as its own group instead of a cancellation plus a new
   order. The models with a single group or with one group removed (notebook 03) were added after
-  the main results and are only exploratory.
+  the main results and are only exploratory. The same holds for the ridge version of M3 and the
+  scaled target, added after a review.
 - **No trading strategy.** We measure forecast errors, not profits, and ignore trading costs.
 
 ## 6. Reproducing the results
