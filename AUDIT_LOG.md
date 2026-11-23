@@ -20,4 +20,4 @@ Rule of thumb: a few useful remarks, not a long list. Say "OK" when something is
 - [x] Wording of the H1 conclusion: too strong for a 0.35 % MSE gain (the gain itself holds with Clark-West): addressed (conclusions and takeaways softened to reflect modest magnitude). Checked by GC: mostly OK, see the follow-up below
 - [x] Zero-change baseline from `TODO.md`: addressed (Zero-change baseline added to evaluation table). Checked by GC: OK
 - [x] Optional: move the order book replay to `book-reconstruction/`: kept in the notebook for now, OK
-- [ ] Follow-up (GC): MAE of Model 1 vs the zero baseline, a few strong words and untested explanations, Wilson wording, tab typo in the last cell (see `[reply GC]` in the notebook)
+- [x] Follow-up (GC): MAE of Model 1 vs the zero baseline, a few strong words and untested explanations, Wilson wording, tab typo in the last cell: addressed (MAE nuance clarified, speculative phrasing softened, Wilson/McNemar wording adjusted, typo fixed). Checked by JS: OK
