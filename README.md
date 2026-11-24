@@ -10,6 +10,8 @@
 - [How to contribute](#how-to-contribute)
 
 # High-Level Overview 
+**Report:** [report/report.pdf](report/report.pdf) (same text in [report/report.md](report/report.md)): question, data, method, results and limits.
+
 For this project we are going to use the Nasdaq ITCH data to do some analysis on it. We will later go into details on what exact hypothesis we are going to test and what analysis we are going to do, but for now we will focus on the data preparation part. So we have to focus on part 1 (Conversion) and part 2 (Analysis).
 
 We needed a level-3-order book data to do our analysis, so we stumbled upon the Nasdaq ITCH data which contains the level-3-order book data for one day(December 30, 2019), and for multiple tickers. (Sneak peek: we will focus on AAPL ticker for now, but we can do the same for other tickers as well).
@@ -107,12 +109,21 @@ reader's return object, generated outputs, and terminal execution instructions.
 The schema-checking reader is implemented; book replay and book-based indicators
 are still future work.
 
+The hypothesis notebooks follow: [02](analysis/02_mid_price_prediction.ipynb) tests H1 (total
+order flow imbalance), [03](analysis/03_hypothesis2_decomposed_flow.ipynb) tests H2 (OFI split by
+message type) and [04](analysis/04_second_day_replication.ipynb) repeats both tests on a second
+session, 2019-07-30. Notebook 04 reads the 1-second grids of `data/default/AAPL_grids_1s.parquet`,
+so it runs without downloading the raw file of that day.
+
 
 # How to contribute
 For doing a PR to master branch, 3 automated checks must pass: 
   1. github workflow checks (pytest, ruff, mypy)
   2. Having the most latest version of the code (git pull origin master)
   3. 2 approvales from the reviewers must accept
+
+Cross-audit: before merging a colleague's work, audit it and leave verdicts as code comments
+following the convention in [AUDIT_LOG.md](AUDIT_LOG.md).
 
 Tips to contribute:
 1. Before doing a PR you can run local automated checks to make sure your code is not breaking anything. (See below)
