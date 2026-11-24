@@ -146,8 +146,8 @@ Five-second price moves are mostly noise; the flow explains a small but real par
 ## 6. Reproducing the results
 
 ```bash
-uv sync --locked          # install the pinned dependencies
-uv run itch-convert       # optional: rebuild data/processed/AAPL_2019-12-30.parquet from the raw file
+uv sync --locked --group analysis   # install the pinned dependencies
+uv run itch-convert                 # optional: rebuild the December file from the raw data
 ```
 
 Then open the notebooks in `analysis/` with the project's `.venv` kernel:
