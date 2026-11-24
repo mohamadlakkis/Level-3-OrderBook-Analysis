@@ -1,7 +1,9 @@
 # Does order flow help predict short-term price moves? Level-3 order book of AAPL on Nasdaq
 
-Python for Data Science project, by [@mohamadlakkis](https://github.com/mohamadlakkis),
-[@surryjules](https://github.com/surryjules) and [@AspiringTrickstar](https://github.com/AspiringTrickstar).
+Python for Data Science project by Guillaume Colakoglu-Borey
+([@AspiringTrickstar](https://github.com/AspiringTrickstar)), Mohamad Lakkis
+([@mohamadlakkis](https://github.com/mohamadlakkis)) and Jules Surry
+([@surryjules](https://github.com/surryjules)).
 
 **Report:** [report/report.pdf](report/report.pdf) (same text in [report/report.md](report/report.md)).
 
@@ -38,8 +40,8 @@ file of about 4 GB covering all stocks.
 | 2019-12-30 | `12302019.NASDAQ_ITCH50.gz` | 1,519,367 | notebooks 01, 02, 03 |
 | 2019-07-30 | `07302019.NASDAQ_ITCH50.gz` | 1,315,849 | notebook 04 |
 
-**Collection and cleaning.** The raw files cannot be read with pandas. We wrote a converter
-(`book-reconstruction/`) that:
+**Collection and cleaning.** pandas cannot read the raw files, so we wrote a converter
+(`book-reconstruction/`). It:
 
 1. decodes the binary messages following the Nasdaq specification
    ([NASDAQ_GUIDE_PDF/](NASDAQ_GUIDE_PDF/)),
